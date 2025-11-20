@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jieun Jung – 2025 Study Record</title>
+    <style>
+        /* --- Animated Sky Background --- */
+        #animated-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(to bottom, #a8d8f0, #e0f2fa);
+            overflow: hidden;
+        }
+
+        #animated-sky::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            filter: blur(15px);
+            opacity: 0; /* Start hidden, fade in with animation */
+        }
+        
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+        }
+
+        /* Cloud Layer 1 (Slow, Far) */
+        .cloud-1 {
+            width: 250px;
+            height: 80px;
+            top: 15%;
+            animation: move-slow 120s linear infinite, fade-in 10s forwards, drift 8s ease-in-out infinite alternate;
+            animation-delay: -10s, 0s, 0s;
+        }
+        .cloud-1::before { width: 150px; height: 100px; top: -40px; left: 30px; }
+        .cloud-1::after  { width: 180px; height: 70px; top: 0px; right: 20px; }
+
+        .cloud-2 {
+            width: 300px;
+            height: 100px;
+            top: 25%;
+            filter: blur(20px);
+            animation: move-slow 150s linear infinite, fade-in 10s forwards, drift 10s ease-in-out infinite alternate;
+            animation-delay: -60s, 1s, -3s;
+        }
+        .cloud-2::before { width: 180px; height: 120px; top: -50px; left: 40px; }
+        .cloud-2::after  { width: 200px; height: 90px; top: 0; right: 30px; }
+
+        /* Cloud Layer 2 (Medium) */
+        .cloud-3 {
+            width: 280px;
+            height: 90px;
+            top: 40%;
+            animation: move-medium 80s linear infinite, fade-in 8s forwards, drift 7s ease-in-out infinite alternate;
+            animation-delay: -30s, 0.5s, -2s;
+        }
+        .cloud-3::before { width: 160px; height: 110px; top: -45px; left: 35px; }
+        .cloud-3::after  { width: 190px; height: 80px; top: -10px; right: 25px; }
+
+        .cloud-4 {
+            width: 220px;
+            height: 70px;
+            top: 60%;
+            filter: blur(12px);
+            animation: move-medium 95s linear infinite, fade-in 9s forwards, drift 9s ease-in-out infinite alternate;
+            animation-delay: -90s, 2s, -1s;
+        }
+        .cloud-4::before { width: 130px; height: 90px; top: -35px; left: 25px; }
+        .cloud-4::after  { width: 150px; height: 60px; top: 0; right: 20px; }
+        
+        /* Cloud Layer 3 (Fast, Near) */
+        .cloud-5 {
+            width: 200px;
+            height: 60px;
+            top: 75%;
+            filter: blur(10px);
+            animation: move-fast 50s linear infinite, fade-in 7s forwards, drift 6s ease-in-out infinite alternate;
+            animation-delay: -5s, 0.2s, 0s;
+        }
+        .cloud-5::before { width: 120px; height: 80px; top: -30px; left: 20px; }
+        .cloud-5::after  { width: 140px; height: 50px; top: 0; right: 15px; }
+
+
+        @keyframes move-slow {
+            from { transform: translateX(-200%); }
+            to   { transform: translateX(calc(100vw + 200px)); }
+        }
+        @keyframes move-medium {
+            from { transform: translateX(-300%); }
+            to   { transform: translateX(calc(100vw + 300px)); }
+        }
+        @keyframes move-fast {
+            from { transform: translateX(-250%); }
+            to   { transform: translateX(calc(100vw + 250px)); }
+        }
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes drift {
+            from { transform: translateY(-5px); }
+            to   { transform: translateY(5px); }
+        }
+
+
+        /* --- General Styles & Fonts --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: transparent; /* Make body transparent to see sky */
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 90%;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: rgba(255, 255, 255, 0.85); /* Slightly transparent */
+            border-bottom: 1px solid #e0e0e0;
+            backdrop-filter: blur(5px); /* Frosted glass effect */
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #2c3e50;
+        }
+
+        .header .info {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        
+        .header .info span {
+            margin: 0 15px;
+        }
+
+        .header p {
+            margin-top: 15px;
+            font-style: italic;
+            color: #777;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* --- Main Content Section --- */
+        main {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        main > p {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.5);
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* --- Semester Selection Cards --- */
+        .semester-selection {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .semester-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            width: 300px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3498db;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .semester-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            background-color: rgba(240, 248, 255, 0.95);
+        }
+
+        .semester-card.active {
+            border-color: #3498db;
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
+            color: #2980b9;
+            background-color: rgba(255, 255, 255, 1);
+        }
+        
+        /* --- Semester Content Area --- */
+        .semester-content {
+            display: none; /* Hidden by default */
+            margin-top: 40px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            text-align: left;
+            animation: fadeIn 0.5s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .semester-content h2 {
+            font-size: 2em;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .semester-content h3 {
+            font-size: 1.4em;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        .semester-content ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        
+        .semester-content p, .semester-content li {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-size: 0.9em;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            .header .info span {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .semester-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .semester-card {
+                width: 80%;
+                padding: 30px;
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="animated-sky">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+        <div class="cloud cloud-5"></div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- HEADER SECTION: Edit personal information here         -->
+    <!-- ====================================================== -->
+    <header class="header">
+        <div class="container">
+            <h1>Jieun Jung</h1>
+            <div class="info">
+                <span><strong>Academic Year:</strong> 2025</span>
+                <span><strong>Major:</strong> Data Science (AISW Track)</span>
+                <span><strong>Email:</strong> jieun.jung@example.com</span>
+            </div>
+            <p>A diligent and curious student passionate about leveraging data to solve real-world problems.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <p>This page contains the academic study records for the 1st and 2nd semesters of 2025.</p>
+
+        <!-- Semester Selection Cards -->
+        <div class="semester-selection">
+            <div class="semester-card" id="card-sem1">1st Semester 2025</div>
+            <div class="semester-card" id="card-sem2">2nd Semester 2025</div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 1st SEMESTER CONTENT: Edit details for Semester 1 here -->
+        <!-- ====================================================== -->
+        <section class="semester-content" id="content-sem1">
+            <h2>1st Semester 2025 – Study Summary</h2>
+            
+            <h3>Courses Taken</h3>
+            <ul>
+                <li>Introduction to Machine Learning</li>
+                <li>Advanced Database Systems</li>
+                <li>Data Visualization and Communication</li>
+                <li>Computational Statistics I</li>
+                <li>Ethics in AI and Data</li>
+            </ul>
+
+            <h3>Key Projects or Assignments</h3>
+            <ul>
+                <li><strong>ML Project:</strong> Developed a predictive model for stock price movement using regression algorithms.</li>
+                <li><strong>Data Viz Project:</strong> Created an interactive dashboard to visualize public health trends.</li>
+            </ul>
+
+            <h3>Skills and Topics Learned</h3>
+            <ul>
+                <li>Supervised and Unsupervised Learning Techniques</li>
+                <li>SQL and NoSQL Database Management</li>
+                <li>Tableau and D3.js for Visualization</li>
+                <li>Statistical Inference and Hypothesis Testing</li>
+            </ul>
+
+            <h3>Reflection / Notes</h3>
+            <p>
+                The first semester was foundational, providing a strong theoretical base in machine learning and statistics. 
+                The projects were challenging but offered valuable hands-on experience. I particularly enjoyed the data visualization course.
+            </p>
+        </section>
+
+        <!-- ====================================================== -->
+        <!-- 2nd SEMESTER CONTENT: Edit details for Semester 2 here -->
+        <!-- ====================================================== -->
+        <section class="semester-content" id="content-sem2">
+            <h2>2nd Semester 2025 – Study Summary</h2>
+
+            <h3>Courses Taken</h3>
+            <ul>
+                <li>Deep Learning and Neural Networks</li>
+                <li>Big Data Technologies</li>
+                <li>Natural Language Processing</li>
+                <li>Advanced Algorithms</li>
+                <li>Capstone Project I</li>
+            </ul>
+
+            <h3>Key Projects or Assignments</h3>
+            <ul>
+                <li><strong>Deep Learning Project:</strong> Built a convolutional neural network (CNN) for image classification.</li>
+                <li><strong>NLP Assignment:</strong> Implemented a sentiment analysis tool for customer reviews.</li>
+            </ul>
+
+            <h3>Skills and Topics Learned</h3>
+            <ul>
+                <li>TensorFlow and PyTorch Frameworks</li>
+                <li>Hadoop and Spark for Big Data Processing</li>
+                <li>Text Preprocessing and Word Embeddings (Word2Vec, GloVe)</li>
+                <li>Algorithm Design and Complexity Analysis</li>
+            </ul>
+            
+            <h3>Reflection / Notes</h3>
+            <p>
+                The second semester was focused on more advanced and specialized topics. Working with neural networks was a highlight. 
+                The capstone project has been a great opportunity to apply everything learned so far in a practical setting.
+            </p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © 2025 Jieun Jung – 2025 Academic Year Study Record
+    </footer>
+
+    <script>
+        // Simple JavaScript for tab-like functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardSem1 = document.getElementById('card-sem1');
+            const cardSem2 = document.getElementById('card-sem2');
+            
+            const contentSem1 = document.getElementById('content-sem1');
+            const contentSem2 = document.getElementById('content-sem2');
+
+            // Function to handle displaying content
+            function showContent(contentToShow, activeCard) {
+                // Hide all content sections
+                if (contentSem1.style.display !== 'none') {
+                    contentSem1.style.display = 'none';
+                }
+                if (contentSem2.style.display !== 'none') {
+                    contentSem2.style.display = 'none';
+                }
+                
+                // Deactivate all cards
+                cardSem1.classList.remove('active');
+                cardSem2.classList.remove('active');
+
+                // Show the selected content and activate the card
+                if (contentToShow) {
+                    // Check if it's the same card being clicked again
+                    if (activeCard.classList.contains('active')) {
+                         // Content is already showing, do nothing or hide it
+                    } else {
+                        contentToShow.style.display = 'block';
+                        activeCard.classList.add('active');
+                    }
+                }
+            }
+
+            cardSem1.addEventListener('click', function() {
+                if (contentSem1.style.display === 'block') {
+                    showContent(null, null); // Hide if already visible
+                } else {
+                    showContent(contentSem1, cardSem1);
+                }
+            });
+
+            cardSem2.addEventListener('click', function() {
+                 if (contentSem2.style.display === 'block') {
+                    showContent(null, null); // Hide if already visible
+                } else {
+                    showContent(contentSem2, cardSem2);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
