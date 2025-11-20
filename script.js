@@ -6,51 +6,100 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentSem2 = document.getElementById('content-sem2');
 
     function showContent(contentToShow, activeCard) {
-        contentSem1.style.display = 'none';
-        contentSem2.style.display = 'none';
-        cardSem1.classList.remove('active');
-        cardSem2.classList.remove('active');
+        if (contentSem1) contentSem1.style.display = 'none';
+        if (contentSem2) contentSem2.style.display = 'none';
+        if (cardSem1) cardSem1.classList.remove('active');
+        if (cardSem2) cardSem2.classList.remove('active');
+        
         if (contentToShow && activeCard) {
             contentToShow.style.display = 'block';
             activeCard.classList.add('active');
         }
     }
 
-    cardSem1.addEventListener('click', function() {
-        if (contentSem1.style.display === 'block') {
-            showContent(null, null);
-        } else {
-            showContent(contentSem1, cardSem1);
-        }
-    });
+    if (cardSem1) {
+        cardSem1.addEventListener('click', function() {
+            if (contentSem1.style.display === 'block') {
+                showContent(null, null);
+            } else {
+                showContent(contentSem1, cardSem1);
+            }
+        });
+    }
 
-    cardSem2.addEventListener('click', function() {
-         if (contentSem2.style.display === 'block') {
-            showContent(null, null);
-        } else {
-            showContent(contentSem2, cardSem2);
-        }
-    });
+    if (cardSem2) {
+        cardSem2.addEventListener('click', function() {
+             if (contentSem2.style.display === 'block') {
+                showContent(null, null);
+            } else {
+                showContent(contentSem2, cardSem2);
+            }
+        });
+    }
 
-    // --- JavaScript Cloud Animation ---
-    const clouds = [
-        { el: document.querySelector('.cloud-1'), speed: 0.1,  direction: 1 },
-        { el: document.querySelector('.cloud-2'), speed: 0.25, direction: 1 },
-        { el: document.querySelector('.cloud-3'), speed: 0.15, direction: 1 },
-        { el: document.querySelector('.cloud-4'), speed: 0.3,  direction: 1 },
-        { el: document.querySelector('.cloud-5'), speed: 0.12, direction: -1 }, // Moves right to left
-        { el: document.querySelector('.cloud-6'), speed: 0.35, direction: 1 },
-        { el: document.querySelector('.cloud-7'), speed: 0.08, direction: 1 }
-    ];
+    // --- Dynamic & More Dynamic JavaScript Cloud Animation ---
+    
+    const sky = document.getElementById('animated-sky');
+    if (!sky) return;
 
+    const NUM_CLOUDS = 15;
+    const clouds = [];
     const screenWidth = window.innerWidth;
 
-    // Initialize cloud positions
-    clouds.forEach(cloud => {
-        const startPos = Math.random() * screenWidth;
-        cloud.el.style.transform = `translateX(${startPos}px)`;
-        cloud.x = startPos;
-    });
+    function createCloud() {
+        const cloudEl = document.createElement('div');
+        cloudEl.classList.add('cloud');
+
+        // Randomize visual properties
+        const size = 150 + Math.random() * 150; // width from 150px to 300px
+        const blur = 10 + Math.random() * 15;   // blur from 10px to 25px
+        const top = Math.random() * 85;         // top from 0% to 85%
+        const fadeDuration = 5 + Math.random() * 5; // fade-in from 5s to 10s
+        const driftDuration = 6 + Math.random() * 8;  // drift from 6s to 14s
+
+        cloudEl.style.width = `${size}px`;
+        cloudEl.style.height = `${size * 0.4}px`;
+        cloudEl.style.filter = `blur(${blur}px)`;
+        cloudEl.style.top = `${top}%`;
+        
+        // The core animations (fade-in, drift) are still in CSS, but we set random durations
+        cloudEl.style.animation = `fade-in ${fadeDuration}s forwards, drift ${driftDuration}s ease-in-out infinite alternate`;
+        
+        sky.appendChild(cloudEl);
+
+        // Create pseudo-elements for more complex shapes
+        const before = document.createElement('div');
+        before.style.width = `${size * 0.6}px`;
+        before.style.height = `${size * 0.5}px`;
+        before.style.top = `-${size * 0.2}px`;
+        before.style.left = `${size * 0.1}px`;
+        cloudEl.appendChild(before);
+
+        const after = document.createElement('div');
+        after.style.width = `${size * 0.8}px`;
+        after.style.height = `${size * 0.35}px`;
+        after.style.top = `0px`;
+        after.style.right = `${size * 0.05}px`;
+        cloudEl.appendChild(after);
+        
+        return cloudEl;
+    }
+
+    // Initialize clouds
+    for (let i = 0; i < NUM_CLOUDS; i++) {
+        const cloudEl = createCloud();
+        const startX = Math.random() * screenWidth;
+        cloudEl.style.transform = `translateX(${startX}px)`;
+        
+        clouds.push({
+            el: cloudEl,
+            x: startX,
+            // Randomize speed and direction
+            speed: 0.05 + Math.random() * 0.2, // speed from 0.05 to 0.25
+            // ~90% move LTR, ~10% move RTL
+            direction: Math.random() > 0.1 ? 1 : -1 
+        });
+    }
 
     let lastTime = 0;
     function animateClouds(currentTime) {
@@ -72,10 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 cloud.x = screenWidth;
             }
             
-            // Apply both horizontal movement and the vertical drift from CSS
-            // Note: The 'drift' animation is still running via CSS. 
-            // To combine, we'd typically handle both in JS, but this works if they don't conflict.
-            // For clean separation, we only set the translateX part. The drift is additive.
             cloud.el.style.transform = `translateX(${cloud.x}px)`;
         });
 
