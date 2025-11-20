@@ -1,4 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Popup Logic ---
+    const popup = document.getElementById('welcome-popup');
+    const popupForm = popup.querySelector('form');
+    const visitDateInput = document.getElementById('visit-date');
+
+    // Set today's date for the visit date input
+    if (visitDateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        visitDateInput.value = today;
+    }
+
+    // Show the popup
+    if (popup) {
+        // We use a small timeout to ensure the initial render is complete
+        // and the CSS transition will be visible to the user.
+        setTimeout(() => {
+            popup.classList.add('show');
+        }, 100);
+    }
+
+    // Handle form submission
+    if (popupForm) {
+        popupForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent actual form submission
+            if (popup) {
+                popup.classList.remove('show');
+            }
+        });
+    }
+
     // Tab-switching logic
     const cardSem1 = document.getElementById('card-sem1');
     const cardSem2 = document.getElementById('card-sem2');
