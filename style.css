@@ -27,8 +27,8 @@
     border-radius: 50%;
     filter: blur(12px);
     opacity: 0;
-    /* Horizontal movement is now handled by JavaScript */
-    animation: fade-in 8s forwards, drift 8s ease-in-out infinite alternate;
+    /* Horizontal movement and drift are now handled by JavaScript */
+    animation: fade-in 8s forwards;
 }
 
 .cloud::before, .cloud::after {
@@ -67,9 +67,8 @@
 .cloud-7::before { width: 190px; height: 130px; top: -60px; left: 50px; }
 .cloud-7::after  { width: 210px; height: 100px; top: 0; right: 40px; }
 
-/* Keyframes for fade-in and vertical drift are kept in CSS */
+/* Keyframes for fade-in are kept in CSS */
 @keyframes fade-in { from { opacity: 0; } to { opacity: 0.95; } }
-@keyframes drift { from { transform: translateY(-8px); } to { transform: translateY(8px); } }
 
 /* --- General Styles & Fonts --- */
 body {

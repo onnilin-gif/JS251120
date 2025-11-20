@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Dynamic & More Dynamic JavaScript Cloud Animation ---
+    // --- Interactive JavaScript Cloud Animation ---
     
     const sky = document.getElementById('animated-sky');
     if (!sky) return;
@@ -45,25 +45,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const NUM_CLOUDS = 15;
     const clouds = [];
     const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // Mouse position variables, normalized from -1 to 1
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Listen for mouse movement
+    window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / screenWidth) * 2 - 1;
+        mouseY = (e.clientY / screenHeight) * 2 - 1;
+    }, { passive: true });
+
 
     function createCloud() {
         const cloudEl = document.createElement('div');
         cloudEl.classList.add('cloud');
 
         // Randomize visual properties
-        const size = 150 + Math.random() * 150; // width from 150px to 300px
-        const blur = 10 + Math.random() * 15;   // blur from 10px to 25px
-        const top = Math.random() * 85;         // top from 0% to 85%
-        const fadeDuration = 5 + Math.random() * 5; // fade-in from 5s to 10s
-        const driftDuration = 6 + Math.random() * 8;  // drift from 6s to 14s
+        const size = 150 + Math.random() * 150;
+        const blur = 10 + Math.random() * 15;
+        const top = Math.random() * 85;
+        const fadeDuration = 5 + Math.random() * 5;
 
         cloudEl.style.width = `${size}px`;
         cloudEl.style.height = `${size * 0.4}px`;
         cloudEl.style.filter = `blur(${blur}px)`;
         cloudEl.style.top = `${top}%`;
-        
-        // The core animations (fade-in, drift) are still in CSS, but we set random durations
-        cloudEl.style.animation = `fade-in ${fadeDuration}s forwards, drift ${driftDuration}s ease-in-out infinite alternate`;
+        cloudEl.style.animation = `fade-in ${fadeDuration}s forwards`;
         
         sky.appendChild(cloudEl);
 
@@ -89,39 +98,50 @@ document.addEventListener('DOMContentLoaded', function() {
     for (let i = 0; i < NUM_CLOUDS; i++) {
         const cloudEl = createCloud();
         const startX = Math.random() * screenWidth;
-        cloudEl.style.transform = `translateX(${startX}px)`;
         
         clouds.push({
             el: cloudEl,
             x: startX,
-            // Randomize speed and direction
-            speed: 0.05 + Math.random() * 0.2, // speed from 0.05 to 0.25
-            // ~90% move LTR, ~10% move RTL
-            direction: Math.random() > 0.1 ? 1 : -1 
+            speed: 0.05 + Math.random() * 0.2,
+            direction: Math.random() > 0.1 ? 1 : -1,
+            // Properties for JS-based vertical drift
+            driftSpeed: Math.random() * 0.2 + 0.1,
+            driftRange: Math.random() * 10 + 5,
+            driftOffset: Math.random() * Math.PI * 2, // Random start point in sine wave
         });
     }
 
     let lastTime = 0;
     function animateClouds(currentTime) {
-        if (!lastTime) {
-            lastTime = currentTime;
-        }
+        if (!lastTime) lastTime = currentTime;
         const deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
+        const parallaxStrength = 40; // Max pixels to shift for the fastest cloud
+
         clouds.forEach(cloud => {
-            cloud.x += cloud.speed * cloud.direction * (deltaTime / 16); // Normalize speed
+            // Base horizontal movement
+            cloud.x += cloud.speed * cloud.direction * (deltaTime / 16);
             
             const cloudWidth = cloud.el.offsetWidth;
 
-            // If cloud moves off screen, wrap it around
+            // Wrap around screen
             if (cloud.direction === 1 && cloud.x > screenWidth) {
                 cloud.x = -cloudWidth;
             } else if (cloud.direction === -1 && cloud.x < -cloudWidth) {
                 cloud.x = screenWidth;
             }
             
-            cloud.el.style.transform = `translateX(${cloud.x}px)`;
+            // Parallax effect based on mouse position
+            // Faster clouds (higher speed) are more affected
+            const parallaxOffsetX = -mouseX * parallaxStrength * cloud.speed;
+            const parallaxOffsetY = -mouseY * parallaxStrength * cloud.speed;
+
+            // Vertical drift effect using a sine wave
+            const driftY = Math.sin(currentTime * 0.0005 * cloud.driftSpeed + cloud.driftOffset) * cloud.driftRange;
+            
+            // Combine all transforms
+            cloud.el.style.transform = `translateX(${cloud.x + parallaxOffsetX}px) translateY(${driftY + parallaxOffsetY}px)`;
         });
 
         requestAnimationFrame(animateClouds);
